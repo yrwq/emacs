@@ -20,6 +20,8 @@
 (setq-default rust-indent-offset 2)
 (setq-default python-indent-offset 2)
 (setq evil-shift-width 2)
+;; stop emacs from 'helping' indent
+(electric-indent-mode -1)
 
 ;; org
 (setq org-directory "~/Notes")
@@ -269,3 +271,4 @@
       (rename-buffer name t)
       (emacs-lisp-mode))
     buf))
+(put 'dired-find-alternate-file 'disabled nil)

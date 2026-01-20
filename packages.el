@@ -1,6 +1,37 @@
 ;;; package.el -*- lexical-binding: t -*-
 (require 'package)
 
+(defconst my/startup-log-file (expand-file-name "var/startup.log" user-emacs-directory))
+(defvar my/startup-running t)
+(defvar my/block-package-refresh-during-startup t)
+
+(defun my/log-startup (fmt &rest args)
+  "Append a timestamped message to the startup log."
+  (let ((msg (apply #'format fmt args)))
+    (with-temp-buffer
+      (insert (format-time-string "[%Y-%m-%d %H:%M:%S] "))
+      (insert msg "\n")
+      (append-to-file (point-min) (point-max) my/startup-log-file))))
+
+(add-hook 'emacs-startup-hook
+          (lambda ()
+            (setq my/startup-running nil)
+            (my/log-startup "startup complete; emacs-version=%s" emacs-version)))
+
+(defun my/package-refresh-contents-advice (orig &rest args)
+  (my/log-startup "package-refresh-contents called; startup=%s" my/startup-running)
+  (if (and my/block-package-refresh-during-startup my/startup-running)
+      (progn
+        (message "Blocked package-refresh-contents during startup")
+        nil)
+    (apply orig args)))
+(advice-add 'package-refresh-contents :around #'my/package-refresh-contents-advice)
+
+(defun my/package-install-advice (orig &rest args)
+  (my/log-startup "package-install called for %s; startup=%s" (car args) my/startup-running)
+  (apply orig args))
+(advice-add 'package-install :around #'my/package-install-advice)
+
 (setq package-archives
       '(("elpa"  . "https://elpa.gnu.org/packages/")
         ("melpa" . "https://melpa.org/packages/")))
@@ -14,7 +45,7 @@
   (error "use-package is not installed. Run M-x package-refresh-contents then M-x package-install RET use-package RET."))
 
 (require 'use-package)
-(setq use-package-always-ensure nil)
+(setq use-package-always-ensure t)
 
 (use-package ahk-mode)
 (use-package lua-mode)
