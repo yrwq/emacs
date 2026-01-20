@@ -18,6 +18,18 @@
 
 (use-package ahk-mode)
 (use-package lua-mode)
+
+(use-package lsp-lua
+  :after lsp-mode
+  :hook (lua-mode . lsp-deferred)
+  :config
+  (setq lsp-lua-workspace-path "~/.config/nvim"))
+
+(use-package fennel-mode
+  :mode ("\\.fnl\\'" . fennel-mode)
+  :hook (fennel-mode . lsp-deferred)
+  :config
+  (setq lsp-fennel-enable t))
 (use-package powershell)
 (use-package fontawesome)
 (use-package multiple-cursors)
@@ -81,10 +93,13 @@
     "d"   '(dap-debug :which-key "Debug")
     "m"   '(dap-hydra :which-key "Debug Menu")
 
+    "g"   '(magit :which-key "Magit")
+
     "hr"  '(reload :which-key "Reload Config"))
 
   (general-define-key
     "M-b" 'neotree-toggle
+    "M-m" 'mu4e
     "M-o" 'lsp-ui-imenu
     "M-r" 'compile)
 
@@ -94,7 +109,7 @@
     (if (and (bound-and-true-p lsp-mode)
              (fboundp 'lsp-ui-doc-glance))
         (lsp-ui-doc-glance)
-      (call-interactively 'evil-lookup)))
+      (message "LSP mode not active or lsp-ui-doc-glance not available. Cannot show LSP docs.")))
   (general-define-key :states 'normal "K" 'my/show-docs)
 
   ;; quick access
@@ -215,7 +230,10 @@
   (setq lsp-ui-doc-enable t
         lsp-ui-doc-position 'at-point
         lsp-ui-sideline-enable t
-        lsp-ui-peek-enable t))
+        lsp-ui-peek-enable t
+        lsp-ui-doc-show-with-lsp t ; Explicitly prioritize LSP-provided docs
+        lsp-ui-doc-delay 0.5
+        lsp-ui-doc-max-width 80))
 
 (use-package neotree
   :defer t
@@ -535,3 +553,32 @@
   ("l" windsize-right)
   ("=" balance-windows)
   ("q" nil "quit" :exit t))
+
+(use-package mu4e
+  :ensure nil
+  ;; :load-path "/usr/share/emacs/site-lisp/mu4e/"
+  :config
+  (setq mu4e-change-filenames-when-moving t)
+  ;; Refresh mail using isync every 10 minutes
+  (setq mu4e-update-interval (* 10 60))
+  (setq mu4e-get-mail-command "mailsync")
+  (setq mu4e-maildir "~/.local/share/mail/yrwqid@gmail.com")
+
+  (setq mu4e-drafts-folder "/[Gmail]/Drafts")
+  (setq mu4e-sent-folder   "/[Gmail]/Sent Mail")
+  (setq mu4e-refile-folder "/[Gmail]/All Mail")
+  (setq mu4e-trash-folder  "/[Gmail]/Trash")
+
+  (setq mu4e-html2text-command "w3m -T text/html")
+
+  (setq mu4e-headers-auto-update t
+        mu4e-view-show-images t
+        mu4e-compose-signature-auto-include nil
+        mu4e-use-fancy-chars t)
+
+  (setq mu4e-maildir-shortcuts
+      '((:maildir "/Inbox"    :key ?i)
+        (:maildir "/[Gmail]/Sent Mail" :key ?s)
+        (:maildir "/[Gmail]/Trash"     :key ?t)
+        (:maildir "/[Gmail]/Drafts"    :key ?d)
+        (:maildir "/[Gmail]/All Mail"  :key ?a))))
