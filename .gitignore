@@ -1,0 +1,17 @@
+.DS_Store
+.cache/
+.dap-breakpoints
+.lsp-session-v1
+.org-id-locations
+auto-save-list/
+bookmarks
+elpa/
+hist-undo/
+notes/
+org-roam.db
+projectile-bookmarks.eld
+projects/
+recentf
+transient/
+var/
+projects
