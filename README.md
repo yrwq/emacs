@@ -2,6 +2,11 @@
 
 originally derived from [https://github.com/irhl/sunroom](https://github.com/irhl/sunroom)
 
+install via
+```sh
+git clone https://github.com/yrwq/emacs.git ~/.config/emacs
+```
+
 quick start
 - Leader key is `SPC` (normal mode). Fallback leader is `C-SPC`.
 - Reload config: `SPC h r` or `M-x reload`.
