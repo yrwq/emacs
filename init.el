@@ -8,18 +8,20 @@
 (setq default-directory user-emacs-directory)
 (defconst my/elisp-dir (expand-file-name "el/" user-emacs-directory))
 
-;; Global Indentation (2 spaces for everything)
+;; Global Indentation (4 spaces for everything except some languages)
 (setq-default indent-tabs-mode nil)
-(setq-default tab-width 2)
-(setq-default standard-indent 2)
-(setq-default c-basic-offset 2)
+(setq-default tab-width 4)
+(setq-default standard-indent 4)
+(setq-default c-basic-offset 4)
 (setq-default js-indent-level 2)
 (setq-default json-mode-indent-level 2)
 (setq-default css-indent-offset 2)
 (setq-default typescript-indent-level 2)
-(setq-default rust-indent-offset 2)
-(setq-default python-indent-offset 2)
-(setq evil-shift-width 2)
+(setq-default rust-indent-offset 4)
+(setq-default python-indent-offset 4)
+(setq-default emacs-lisp-indent-offset 2)
+(setq lisp-body-indent 2)
+
 ;; stop emacs from 'helping' indent
 (electric-indent-mode -1)
 

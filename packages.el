@@ -48,13 +48,12 @@
 (setq use-package-always-ensure t)
 
 (use-package ahk-mode)
-(use-package lua-mode)
-
-(use-package lsp-lua
-  :after lsp-mode
+(use-package lua-mode
   :hook (lua-mode . lsp-deferred)
   :config
-  (setq lsp-lua-workspace-path "~/.config/nvim"))
+  (with-eval-after-load 'lsp-mode
+    (when (require 'lsp-lua nil t)
+      (setq lsp-lua-workspace-path "~/.config/nvim"))))
 
 (use-package fennel-mode
   :mode ("\\.fnl\\'" . fennel-mode)
@@ -449,9 +448,7 @@
 (with-eval-after-load 'org-agenda
   (define-key org-agenda-mode-map (kbd "M-p") #'org-agenda-priority))
 
-(use-package org-capture
-  :after org
-  :config
+(with-eval-after-load 'org-capture
   (define-key org-capture-mode-map (kbd "M-RET") #'org-capture-finalize)
   (define-key org-capture-mode-map (kbd "M-.") #'org-capture-kill)
   (define-key org-capture-mode-map (kbd "M-s") #'org-capture-finalize)
@@ -518,6 +515,8 @@
   (define-key vterm-mode-map (kbd "M-A-<down>") 'windsize-down))
 
 (use-package perspective
+  :custom
+  (persp-mode-prefix-key (kbd "C-c M-p"))
   :init
   (persp-mode 1))
 
@@ -585,6 +584,8 @@
   ("=" balance-windows)
   ("q" nil "quit" :exit t))
 
+
+
 (use-package mu4e
   :ensure nil
   ;; :load-path "/usr/share/emacs/site-lisp/mu4e/"
@@ -613,3 +614,8 @@
         (:maildir "/[Gmail]/Trash"     :key ?t)
         (:maildir "/[Gmail]/Drafts"    :key ?d)
         (:maildir "/[Gmail]/All Mail"  :key ?a))))
+
+
+(use-package hl-todo
+  :config
+  (global-hl-todo-mode t))
